@@ -17,31 +17,31 @@ It was developed by Toshiki Kumagai in 2004, later revised by Jean-Francois Goul
 
 ### 0.x #
 
-* v0.01	2004/04/20 kuma@webj.net
+* v0.01	2004/04/20 kuma
  * initial release
-* v0.02	2004/04/20 kuma@webj.net
+* v0.02	2004/04/20 kuma
  * LuaUtils: added LuaLocalToStrings lua_getstack
-* v0.03	2004/04/28 kuma@webj.net
+* v0.03	2004/04/28 kuma
  * can the sample4 able to be compiled also with Delphi6 Personal
-* v0.04	2004/09/02 kuma@webj.net
+* v0.04	2004/09/02 kuma
  * multi file debugger
  * added regex
  * LuaUtils: added LuaToBoolean, LuaPushBoolean, LuaToInteger, LuaPushInteger
    LuaSetTableValue, LuaRawSetTableValue, LuaRegisterCustom,
    LuaRegisterMetatable, LuaRegisterProperty
-* v0.05	2004/09/04 kuma@webj.net
+* v0.05	2004/09/04 kuma
  * debugger bug fix
-* v0.06	2004/09/19 kuma@webj.net
+* v0.06	2004/09/19 kuma
  * debugger bug fix
  * added Execute, SaveAll, CloseAll, CanCloseAll
  * LuaUtils: LuaToString, LuaPushString, LuaError, LuaErrorFmt
-* v0.07	2004/10/03 kuma@webj.net
+* v0.07	2004/10/03 kuma
  * added appli, debugger
  * bug fix regex
-* v0.08	2005/04/20 max.maxm@tiscali.it
+* v0.08	2005/04/20 max.maxm
  * LuaUtils: add LuaPushVariant, LuaToVariant, LuaLoadBufferFromFile
  * solved bugs LuaToInteger Round -> Trunc
-* v0.09	2005/06/23 kuma@webj.net
+* v0.09	2005/06/23 kuma
  * regex use TRegExpr.pas
  * SJIS patch 06/20/05(Copyright SowwaRay) applied.
  * Bugs: Stack problem in LuaProcessTableName.
