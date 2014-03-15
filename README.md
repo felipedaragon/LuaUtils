@@ -61,7 +61,7 @@ It was developed by Toshiki Kumagai in 2004, later revised by Jean-Francois Goul
 * v1.2-mod 2013 FDaragon
  * Updated for Delphi XE3.
 
-## Licence #
+## License #
 
 Same as Lua 5.0.2
 
