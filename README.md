@@ -2,16 +2,16 @@
 
 LuaUtils contains useful functions to work with Lua 5.1 in Delphi.
 
-It was developed by Toshiki Kumagai in 2004, later revised by Jean-Fran輟is Goulet & Massimo Magnano. This latest 2013 revision makes the code compatible with Delphi XE3.
+It was developed by Toshiki Kumagai in 2004, later revised by Jean-Francois Goulet & Massimo Magnano. This latest 2013 revision makes the code compatible with Delphi XE3.
 
 プログラミング言語 Lua(http://www.lua.org/) を Delphi から使える
 ようにします。
 
 ## Files #
 
-`LuaLib.pas` - Translated Delphi unit from C header lualib.h
-`lauxlib.pas` - Translated Delphi unit from C header lauxlib.h
-`LuaUtils.pas` - Library for build samples
+* `LuaLib.pas` - Translated Delphi unit from C header lualib.h
+* `lauxlib.pas` - Translated Delphi unit from C header lauxlib.h
+* `LuaUtils.pas` - Library for build samples
 
 ## History #
 
