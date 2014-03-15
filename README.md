@@ -15,8 +15,6 @@ It was developed by Toshiki Kumagai in 2004, later revised by Jean-Francois Goul
 
 ## History #
 
-### 0.x #
-
 * v0.01	2004/04/20 kuma
  * initial release
 * v0.02	2004/04/20 kuma
@@ -47,18 +45,18 @@ It was developed by Toshiki Kumagai in 2004, later revised by Jean-Francois Goul
  * Bugs: Stack problem in LuaProcessTableName.
    MaxM reported, but I can't reproduce it yet.
 
-### 1.x #
+### Revisions #
 
-* v1.0 2005 MaxM
+* rev1.0 2005 MaxM
  * LuaUtils: added LuaPushVariant, LuaToVariant, LuaGetTableInteger,
    LuaGet\SetTableTMethod, LuaLoadBufferFromFile
   * Solved Bugs: Stack problem in LuaProcessTableName, LuaToInteger why
    Round?, Trunc is better
-* v1.1 2005 MaxM
+* rev1.1 2005 MaxM
  * LuaUtils: added LuaPCallFunction
-* v1.2 2005 MaxM
+* rev1.2 2005 MaxM
  * LuaUtils: added GetCurrentFuncName, LuaSetTablePropertyFuncs
-* v1.2-mod 2013 FDaragon
+* rev1.2-mod 2013 FDaragon
  * Updated for Delphi XE3.
 
 ## License #
