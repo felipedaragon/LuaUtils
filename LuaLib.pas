@@ -2,7 +2,7 @@
 ** $Id: lualib.pas,v 1.3 2006/11/17 00:02:17 jfgoulet Exp $
 ** Lua standard libraries
 ** See Copyright Notice in lua.h
-** Felipe Daragon, 2013:
+** Felipe Daragon, 06.05.2013:
 **  Added lua_gethook (needed by LuaUtils); Changed external to LuaDLL constant.
 *)
 unit lualib;

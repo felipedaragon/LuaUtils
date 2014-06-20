@@ -2,6 +2,7 @@
 //***                     LUA SCRIPT DELPHI UTILITIES                        ***
 //***                                                                        ***
 //***        (c) 2006 Jean-François Goulet,  Massimo Magnano, Kuma           ***
+//***        (c) 2013-2014 Felipe Daragon                                    ***
 //***                                                                        ***
 //***                                                                        ***
 //******************************************************************************
@@ -12,8 +13,10 @@
 //******************************************************************************
 //** See Copyright Notice in lua.h
 
-// Felipe Daragon, 2013:
-//     Updated for XE3
+// FD:
+// - 19.06.2014 - Added backwards compatibility with non-unicode
+//   Delphi releases.
+// - 06.05.2013 - Added support for Delphi XE2 or higher
 
 //Revision 1.2
 //     MaxM Adds :
@@ -38,9 +41,16 @@ interface
 
 uses
   SysUtils, Classes, ComCtrls, luaconf, lua, lualib, lauxlib, Variants;
-
+  
 const
      ERR_Script ='Script Error : ';  
+     
+type
+{$IFDEF UNICODE}
+  lwCha_r = AnsiChar;
+{$ELSE}
+  lwCha_r = Char;
+{$ENDIF}
 
 type
   TOnLuaStdout = procedure (S: pAnsiChar; N: Integer);
@@ -191,12 +201,12 @@ end;
 
 function fputsex(const F, S: String; L, Dummy: Integer): Integer;
 begin
-  Result := fwriteex(pAnsiChar(F), pAnsiChar(S), SizeOf(Char), L, Length(S), Dummy);
+  Result := fwriteex(pAnsiChar(AnsiString(F)), pAnsiChar(AnsiString(S)), SizeOf(lwCha_r), L, Length(AnsiString(S)), Dummy);
 end;
 
 function fputs(const S: string; Dummy: Integer): Integer;
 begin
-  Result := fwrite(pAnsiChar(S), SizeOf(Char), Length(S), Dummy);
+  Result := fwrite(pAnsiChar(AnsiString(S)), SizeOf(lwCha_r), Length(AnsiString(S)), Dummy);
 end;
 
 function lua_printex(L: Plua_State): Integer; cdecl;
@@ -222,7 +232,7 @@ begin
     lua_pushvalue(L, -1);  (* function to be called *)
     lua_pushvalue(L, i);   (* value to print *)
     lua_call(L, 1, 1);
-    S := lua_tostring(L, -1);  (* get result *)
+    S := lua_tostringP(L, -1);  (* get result *)
     if (S = nil) then
     begin
       Result := luaL_error(L, '`tostring'' must return a string to `print''');
@@ -253,7 +263,7 @@ begin
     lua_pushvalue(L, -1);  (* function to be called *)
     lua_pushvalue(L, i);   (* value to print *)
     lua_call(L, 1, 1);
-    S := lua_tostring(L, -1);  (* get result *)
+    S := lua_tostringP(L, -1);  (* get result *)
     if (S = nil) then
     begin
       Result := luaL_error(L, '`tostring'' must return a string to `print''');
@@ -304,7 +314,7 @@ begin
     end else
     begin
       S := luaL_checklstring(L, Arg, @Len);
-      Status := Status and (fwriteex(AR.source, S, SizeOf(Char), Len, AR.currentline, F) = Len);
+      Status := Status and (fwriteex(AR.source, S, SizeOf(lwCha_r), Len, AR.currentline, F) = Len);
     end;
     Inc(Arg);
   end;
@@ -342,7 +352,7 @@ begin
     end else
     begin
       S := luaL_checklstring(L, Arg, @Len);
-      Status := Status and (fwrite(S, SizeOf(Char), Len, F) = Len);
+      Status := Status and (fwrite(S, SizeOf(lwCha_r), Len, F) = Len);
     end;
     Inc(Arg);
   end;
@@ -418,12 +428,12 @@ begin
   Size := lua_strlen(L, Index);
   SetLength(Result, Size);
   if (Size > 0) then
-    Move(lua_tostring(L, Index)^, Result[1], Size);
+    Move(lua_tostringP(L, Index)^, Result[1], Size);
 end;
 
 procedure LuaPushString(L: PLua_State; const S: string);
 begin
-  lua_pushstring(L, pAnsiChar(S));
+  lua_pushstring(L, pAnsiChar(AnsiString(S)));
 end;
 
 function LuaIncIndex(L: Plua_State; Index: Integer): Integer;
@@ -456,7 +466,7 @@ end;
 procedure LuaPushKeyString(L: PLua_State; var Index: Integer; const Key: string);
 begin
   Index := LuaAbsIndex(L, Index);
-  lua_pushstring(L, pAnsiChar(Key));
+  lua_pushstring(L, pAnsiChar(AnsiString(Key)));
 end;
 
 procedure LuaGetTable(L: Plua_State; TableIndex: Integer; const Key: string);
@@ -558,7 +568,7 @@ procedure LuaSetTableValue(L: PLua_State; TableIndex: Integer; const Key: string
 begin
   TableIndex := LuaAbsIndex(L, TableIndex);
   ValueIndex := LuaAbsIndex(L, ValueIndex);
-  lua_pushstring(L, pAnsiChar(Key));
+  lua_pushstring(L, pAnsiChar(AnsiString(Key)));
   lua_pushvalue(L, ValueIndex);
   lua_settable(L, TableIndex);
 end;
@@ -587,7 +597,7 @@ end;
 procedure LuaSetTableString(L: Plua_State; TableIndex: Integer; const Key: string; S: string);
 begin
   LuaPushKeyString(L, TableIndex, Key);
-  lua_pushstring(L, pAnsiChar(S));
+  lua_pushstring(L, pAnsiChar(AnsiString(S)));
   lua_settable(L, TableIndex);
 end;
 
@@ -640,7 +650,7 @@ procedure LuaRawSetTableValue(L: PLua_State; TableIndex: Integer; const Key: str
 begin
   TableIndex := LuaAbsIndex(L, TableIndex);
   ValueIndex := LuaAbsIndex(L, ValueIndex);
-  lua_pushstring(L, pAnsiChar(Key));
+  lua_pushstring(L, pAnsiChar(AnsiString(Key)));
   lua_pushvalue(L, ValueIndex);
   lua_rawset(L, TableIndex);
 end;
@@ -669,7 +679,7 @@ end;
 procedure LuaRawSetTableString(L: Plua_State; TableIndex: Integer; const Key: string; S: string); 
 begin
   LuaPushKeyString(L, TableIndex, Key);
-  lua_pushstring(L, pAnsiChar(S));
+  lua_pushstring(L, pAnsiChar(AnsiString(S)));
   lua_rawset(L, TableIndex);
 end;
 
@@ -898,7 +908,7 @@ begin
     if (lua_type(L, -1) <> LUA_TTABLE) then
     begin
       lua_pop(L, 1);
-      lua_pushstring(L, pAnsiChar(LastName));
+      lua_pushstring(L, pAnsiChar(ansistring(LastName)));
       lua_newtable(L);
       lua_rawset(L, TableIndex);
       LuaGetTable(L, TableIndex, LastName);
@@ -946,7 +956,7 @@ begin
   if (lua_type(L, -1) <> LUA_TTABLE) then
   begin
     lua_pop(L, 1);
-    lua_pushstring(L, pAnsiChar(S));
+    lua_pushstring(L, pAnsiChar(AnsiString(S)));
     lua_newtable(L);
     lua_settable(L, TI);
     LuaGetTable(L, TI, S);
@@ -1088,7 +1098,7 @@ begin
   end;
 
   Code := DebugValue + '=' + Ident;
-  luaL_loadbuffer(L, pAnsiChar(Code), Length(Code), 'debug');
+  luaL_loadbuffer(L, pAnsiChar(AnsiString(Code)), Length(AnsiString(Code)), 'debug');
   Hook := lua_gethook(L);
   Mask := lua_gethookmask(L);
   Count := lua_gethookcount(L);
@@ -1119,7 +1129,7 @@ begin
       try
         lua_pushnumber(L, StrToFloat(Value));
       except
-        lua_pushstring(L, pAnsiChar(Dequote(Value)));
+        lua_pushstring(L, pAnsiChar(ansistring(Dequote(Value))));
       end;
       lua_getstack(L, 0, AR);
       lua_getinfo(L, 'Snlu', AR);
@@ -1127,7 +1137,7 @@ begin
     end else
     begin
       Code := Ident + '=' + Value;
-      luaL_loadbuffer(L, pAnsiChar(Code), Length(Code), 'debug');
+      luaL_loadbuffer(L, pAnsiChar(ansistring(Code)), Length(ansistring(Code)), 'debug');
       if (lua_pcall(L, 0, 0, 0) <> 0) then
         lua_remove(L, -1);
     end;
@@ -1139,14 +1149,14 @@ end;
 procedure LuaProcessErrorMessage(const ErrMsg: string; var Title: string; var Line: Integer; var Msg: string);
 const
   Term = #$00;
-  function S(Index: Integer): Char;
+  function S(Index: Integer): lwCha_r;
   begin
     if (Index <= Length(ErrMsg)) then
       Result := ErrMsg[Index]
     else
       Result := Term;
   end;
-  function IsDigit(C: Char): Boolean;
+  function IsDigit(C: lwCha_r): Boolean;
   begin
     Result := ('0' <= C) and (C <= '9');
   end;
@@ -1193,7 +1203,7 @@ var
   Title, Msg: string;
   Line: Integer;
 begin
-  if (luaL_loadbuffer(L, pAnsiChar(Code), Length(Code), pAnsiChar(Name)) = 0) then
+  if (luaL_loadbuffer(L, pAnsiChar(AnsiString(Code)), Length(AnsiString(Code)), pAnsiChar(AnsiString(Name))) = 0) then
     Exit;
 
   LuaProcessErrorMessage(LuaStackToStr(L, -1, -1), Title, Line, Msg);
@@ -1261,7 +1271,7 @@ end;
 
 procedure LuaError(L: Plua_State; const Msg: string);
 begin
-  luaL_error(L, pAnsiChar(Msg));
+  luaL_error(L, pAnsiChar(ansistring(Msg)));
 end;
 
 procedure LuaErrorFmt(L: Plua_State; const Fmt: string; const Args: array of Const);
@@ -1318,8 +1328,8 @@ const
 var
   Index: Integer;
   Text: string;
-  Token: Char;
-  function S(Index: Integer): Char;
+  Token: lwCha_r;
+  function S(Index: Integer): lwCha_r;
   begin
     if (Index <= Length(TableStr)) then
       Result := TableStr[Index]
@@ -1343,7 +1353,7 @@ var
     until (S(Index) <> '"');
   end;
   function GetValue: string;
-    function IsIdent(C: Char): Boolean;
+    function IsIdent(C: lwCha_r): Boolean;
     const
       S = ' =(){}' + CR + LF;
     begin
@@ -1358,7 +1368,7 @@ var
       Inc(Index);
     Result := Copy(TableStr, SI, Index - SI);
   end;
-  function GetToken: Char;
+  function GetToken: lwCha_r;
     function SkipSpace(var Index: Integer): Integer;
     const
       TAB = #$09;
@@ -1397,7 +1407,7 @@ var
     if (Pos(Token, S) = -1) then
       raise Exception.CreateFmt('Error %s is required :%s', [Copy(TableStr, Index - 1, Length(TableStr))]);
   end;
-  function CheckGetToken(S: string): Char;
+  function CheckGetToken(S: string): lwCha_r;
   begin
     Result := GetToken;
     Check(S);

@@ -3,10 +3,14 @@
 ** Auxiliary functions for building Lua libraries
 ** See Copyright Notice in lua.h
 **
-**   Translation form C and Delphi adaptation of Code : Massimo Magnano 2006
+** Translation form C and Delphi adaptation of Code : Massimo Magnano 2006
+** Modifications copyright (c) 2013-2014 Felipe Daragon
 **
-** Felipe Daragon, 2013:
-**  Updated for XE3; Changed external to LuaDLL constant.
+** Changes:
+**  19.06.2014, FD - Added backwards compatibility with non-unicode
+**  Delphi releases.
+**  06.05.2013, FD - Added support for Delphi XE2 or higher. Changed
+**  external to LuaDLL constant.
 *)
 unit lauxlib;
 
@@ -18,6 +22,12 @@ interface
 
 uses lua, luaconf;
 
+type
+{$IFDEF UNICODE}
+  lwCha_r = AnsiChar;
+{$ELSE}
+  lwCha_r = Char;
+{$ENDIF}
 
 {$ifdef LUA_COMPAT_GETN}
 function luaL_getn(L: Plua_State; t: Integer): Integer; cdecl external LuaDLL;
@@ -123,14 +133,14 @@ type
     p: pAnsiChar;    (* current position in buffer *)
     lvl: Integer; (* number of strings in the stack(level) *)
     L: Plua_State;
-    buffer: array [0..LUAL_BUFFERSIZE - 1] of AnsiChar;
+    buffer: array [0..LUAL_BUFFERSIZE - 1] of lwCha_r;
   end;
   PluaL_Buffer = ^luaL_Buffer;
 
-procedure luaL_addchar(B: PluaL_Buffer; c: AnsiChar);
+procedure luaL_addchar(B: PluaL_Buffer; c: lwCha_r);
 
 (* compatibility only *)
-procedure luaL_putchar(B: PluaL_Buffer; c: AnsiChar);
+procedure luaL_putchar(B: PluaL_Buffer; c: lwCha_r);
 
 function luaL_addsize(B: PLuaL_Buffer; N: Integer): pAnsiChar;
 
@@ -258,7 +268,7 @@ end;
 ** =======================================================
 *)
 
-procedure luaL_addchar(B: PluaL_Buffer; C: AnsiChar);
+procedure luaL_addchar(B: PluaL_Buffer; C: lwCha_r);
 begin
      if ((B.P <= @B.Buffer[High(B.Buffer)]) or (luaL_prepbuffer(B) <> #0)) then
      begin
@@ -267,7 +277,7 @@ begin
      end;
 end;
 
-procedure luaL_putchar(B: PluaL_Buffer; c: AnsiChar);
+procedure luaL_putchar(B: PluaL_Buffer; c: lwCha_r);
 begin
      luaL_addchar(B, C);
 end;
