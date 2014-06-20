@@ -1,10 +1,12 @@
 # LuaUtils #
 
-LuaUtils contains useful functions to work with Lua 5.1 in Delphi.
+LuaUtils (aka Lua for Delphi) contains useful functions to work with Lua 5.1 in Delphi.
 
-It was developed by Toshiki Kumagai in 2004, later revised by Jean-Francois Goulet & Massimo Magnano. This latest 2013 revision makes the code compatible with Delphi XE3.
+It was developed by Toshiki Kumagai in 2004, later revised by Jean-Francois Goulet & Massimo Magnano.
 
-プログラミング言語 Lua(http://www.lua.org/) を Delphi から使える
+This latest 2013 revision makes the code compatible with Delphi XE2 or higher.It still compiles and works with the older, non-Unicode Delphi releases.
+
+プログラミング言語 [Lua](http://www.lua.org/) を Delphi から使える
 ようにします。
 
 ## Files #
@@ -12,6 +14,10 @@ It was developed by Toshiki Kumagai in 2004, later revised by Jean-Francois Goul
 * `LuaLib.pas` - Translated Delphi unit from C header lualib.h
 * `lauxlib.pas` - Translated Delphi unit from C header lauxlib.h
 * `LuaUtils.pas` - Library for build samples
+
+## Compiling #
+
+For compiling LuaUtils you will need the `Lua.pas` library from the [pLua project](https://github.com/felipedaragon/pLua-XE).
 
 ## History #
 
@@ -57,7 +63,7 @@ It was developed by Toshiki Kumagai in 2004, later revised by Jean-Francois Goul
 * rev1.2 2005 MaxM
  * LuaUtils: added GetCurrentFuncName, LuaSetTablePropertyFuncs
 * rev1.2-mod 2013 FDaragon
- * Updated for Delphi XE3.
+ * Updated for Delphi XE2 or higher.
 
 ## License #
 
@@ -70,7 +76,5 @@ Lua-5.0.2 と同一。
 詳細については COPYRIGHT そして http://www.lua.org/license.html
 を参照してください。
 
-2005/07/04 t_kumagai
-http://kuma.webj.net/
-kuma@webj.net
+2005/07/04 [t_kumagai](http://kuma.webj.net/) - kuma@webj.net
 
