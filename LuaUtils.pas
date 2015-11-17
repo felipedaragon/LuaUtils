@@ -40,8 +40,13 @@ unit LuaUtils;
 interface
 
 uses
-  SysUtils, Classes, ComCtrls, luaconf, lua, lualib, lauxlib, Variants;
-  
+  {$IF CompilerVersion >= 23}
+  System.SysUtils, System.Classes, Vcl.ComCtrls, System.Variants, Vcl.Dialogs,
+  {$ELSE}
+  SysUtils, Classes, ComCtrls, Variants, Dialogs,
+  {$IFEND}
+  luaconf, lua, lualib, lauxlib;
+
 const
      ERR_Script ='Script Error : ';  
      
@@ -158,9 +163,6 @@ var
   SubTableCount: Integer;
 
 implementation
-
-uses
-  Dialogs;
 
 const
   QuoteStr = '"';
@@ -1152,7 +1154,7 @@ const
   function S(Index: Integer): lwCha_r;
   begin
     if (Index <= Length(ErrMsg)) then
-      Result := ErrMsg[Index]
+      Result := lwCha_r(ErrMsg[Index])
     else
       Result := Term;
   end;
@@ -1332,7 +1334,7 @@ var
   function S(Index: Integer): lwCha_r;
   begin
     if (Index <= Length(TableStr)) then
-      Result := TableStr[Index]
+      Result := lwCha_r(TableStr[Index])
     else
       Result := EOF;
   end;
